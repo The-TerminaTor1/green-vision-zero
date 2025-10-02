@@ -13,12 +13,25 @@ import {
   CheckCircle, 
   ShoppingCart,
   Filter,
-  TrendingUp
+  TrendingUp,
+  Upload,
+  DollarSign,
+  Eye
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
+  const { role, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const projects = [
     {
@@ -115,10 +128,14 @@ const Marketplace = () => {
         <section className="bg-gradient-to-r from-primary to-accent-foreground text-primary-foreground py-12">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Offset Your Carbon Footprint Today
+              {role === "firm" && "Manage Your Projects & Credits"}
+              {role === "corporate" && "Purchase Carbon Credits"}
+              {role === "individual" && "Offset Your Carbon Footprint"}
             </h1>
             <p className="text-lg opacity-90 max-w-2xl mx-auto">
-              Browse verified carbon offset projects and make a real difference
+              {role === "firm" && "Upload projects, manage credits, and reach corporate buyers"}
+              {role === "corporate" && "Browse verified projects and achieve your net-zero goals"}
+              {role === "individual" && "Browse verified projects and make a real difference"}
             </p>
           </div>
         </section>
@@ -202,13 +219,28 @@ const Marketplace = () => {
 
             {/* Main Content */}
             <div className="flex-1">
+              {role === "firm" && (
+                <Card className="p-6 mb-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-2 border-blue-500/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-foreground mb-2">Your Projects</h3>
+                      <p className="text-muted-foreground">Upload new projects and manage existing ones</p>
+                    </div>
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Project
+                    </Button>
+                  </div>
+                </Card>
+              )}
+              
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    Available Projects
+                    {role === "firm" ? "Your Projects" : "Available Projects"}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    {projects.length} projects found
+                    {projects.length} projects {role === "firm" ? "listed" : "found"}
                   </p>
                 </div>
                 <Button variant="outline">
@@ -275,10 +307,24 @@ const Marketplace = () => {
                         </div>
                       </div>
 
-                      <Button className="w-full">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Buy Credits
-                      </Button>
+                      {role === "individual" && (
+                        <Button className="w-full" variant="outline">
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Details
+                        </Button>
+                      )}
+                      {role === "corporate" && (
+                        <Button className="w-full">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Buy Credits
+                        </Button>
+                      )}
+                      {role === "firm" && (
+                        <Button className="w-full" variant="secondary">
+                          <DollarSign className="h-4 w-4 mr-2" />
+                          Manage Project
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 ))}

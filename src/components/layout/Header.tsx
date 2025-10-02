@@ -1,11 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Leaf, Menu, X, LogOut, User, Building2, ShoppingBag } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { role, isAuthenticated, logout } = useAuth();
   
   const navItems = [
     { name: "Home", path: "/" },
@@ -15,6 +19,28 @@ const Header = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const getRoleDisplay = () => {
+    if (!role) return null;
+    const roleConfig = {
+      individual: { label: "Individual", icon: User, color: "bg-green-500" },
+      firm: { label: "Firm", icon: Building2, color: "bg-blue-500" },
+      corporate: { label: "Corporate", icon: ShoppingBag, color: "bg-purple-500" },
+    };
+    const config = roleConfig[role];
+    const Icon = config.icon;
+    return (
+      <Badge variant="secondary" className="flex items-center gap-1">
+        <Icon className="h-3 w-3" />
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -42,12 +68,19 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/user-dashboard">Dashboard</Link>
-            </Button>
+            {isAuthenticated ? (
+              <>
+                {getRoleDisplay()}
+                <Button variant="ghost" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -77,12 +110,19 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-2">
-                <Button variant="ghost" asChild>
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/user-dashboard">Dashboard</Link>
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <div className="py-2">{getRoleDisplay()}</div>
+                    <Button variant="ghost" onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <Button asChild>
+                    <Link to="/login">Login</Link>
+                  </Button>
+                )}
               </div>
             </nav>
           </div>
