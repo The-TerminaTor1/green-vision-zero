@@ -33,6 +33,87 @@ const Marketplace = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  const contributionProjects = [
+    {
+      id: 1,
+      title: "Plant 10 Trees in Amazon",
+      provider: "EcoForest Initiative",
+      location: "Brazil",
+      type: "Tree Plantation",
+      image: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80",
+      credits: 5,
+      price: 499,
+      verified: true,
+      impact: "50 kg CO₂/year",
+      description: "Contribute to Amazon reforestation",
+    },
+    {
+      id: 2,
+      title: "Solar Panel Contribution",
+      provider: "SunPower Solutions",
+      location: "India",
+      type: "Renewable Energy",
+      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80",
+      credits: 8,
+      price: 799,
+      verified: true,
+      impact: "80 kg CO₂/year",
+      description: "Support solar energy expansion",
+    },
+    {
+      id: 3,
+      title: "Mangrove Conservation",
+      provider: "Coastal Guardians",
+      location: "Indonesia",
+      type: "Coastal Restoration",
+      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+      credits: 6,
+      price: 599,
+      verified: true,
+      impact: "60 kg CO₂/year",
+      description: "Protect coastal ecosystems",
+    },
+    {
+      id: 4,
+      title: "Wind Energy Support",
+      provider: "WindTech Corp",
+      location: "Denmark",
+      type: "Renewable Energy",
+      image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=800&q=80",
+      credits: 10,
+      price: 999,
+      verified: true,
+      impact: "100 kg CO₂/year",
+      description: "Contribute to wind energy",
+    },
+    {
+      id: 5,
+      title: "Clean Water Initiative",
+      provider: "AquaPure Foundation",
+      location: "Kenya",
+      type: "Water Conservation",
+      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+      credits: 4,
+      price: 399,
+      verified: true,
+      impact: "40 kg CO₂/year",
+      description: "Support clean water access",
+    },
+    {
+      id: 6,
+      title: "Urban Forest Pack",
+      provider: "Green Cities Alliance",
+      location: "Singapore",
+      type: "Urban Greening",
+      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80",
+      credits: 7,
+      price: 699,
+      verified: true,
+      impact: "70 kg CO₂/year",
+      description: "Create urban green spaces",
+    },
+  ];
+
   const projects = [
     {
       id: 1,
@@ -250,7 +331,7 @@ const Marketplace = () => {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((project) => (
+                {(role === "individual" ? contributionProjects : projects).map((project: any) => (
                   <Card
                     key={project.id}
                     className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30"
@@ -293,24 +374,43 @@ const Marketplace = () => {
                             {project.impact}
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Available</span>
-                          <span className="font-semibold">
-                            {project.creditsAvailable.toLocaleString()} credits
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Price</span>
-                          <span className="font-semibold text-primary">
-                            ${project.pricePerCredit}/credit
-                          </span>
-                        </div>
+                        {role === "individual" ? (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Credits Earned</span>
+                              <span className="font-semibold text-primary">
+                                {project.credits} credits
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Contribution</span>
+                              <span className="font-semibold text-lg text-primary">
+                                ₹{project.price}
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Available</span>
+                              <span className="font-semibold">
+                                {project.creditsAvailable?.toLocaleString()} credits
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Price</span>
+                              <span className="font-semibold text-primary">
+                                ${project.pricePerCredit}/credit
+                              </span>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {role === "individual" && (
-                        <Button className="w-full" variant="outline">
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
+                        <Button className="w-full">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Contribute ₹{project.price}
                         </Button>
                       )}
                       {role === "corporate" && (

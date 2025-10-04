@@ -5,6 +5,7 @@ import HowItWorks from "@/components/home/HowItWorks";
 import ImpactStats from "@/components/home/ImpactStats";
 import ProjectShowcase from "@/components/home/ProjectShowcase";
 import Testimonials from "@/components/home/Testimonials";
+import GlobeVisualization from "@/components/home/GlobeVisualization";
 
 const Index = () => {
   return (
@@ -12,6 +13,9 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <section className="py-16 px-4">
+          <GlobeVisualization />
+        </section>
         <HowItWorks />
         <ImpactStats />
         <ProjectShowcase />
