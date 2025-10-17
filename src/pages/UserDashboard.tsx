@@ -15,6 +15,7 @@ import {
   Target
 } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import ProgressiveContributionTracker from "@/components/dashboard/ProgressiveContributionTracker";
 
 const UserDashboard = () => {
   const userData = {
@@ -120,6 +121,9 @@ const UserDashboard = () => {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
+              {/* Progressive Contribution Tracker */}
+              <ProgressiveContributionTracker />
+              
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Contribution Breakdown */}
                 <Card className="p-6">

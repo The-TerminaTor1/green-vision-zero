@@ -6,6 +6,7 @@ import ImpactStats from "@/components/home/ImpactStats";
 import ProjectShowcase from "@/components/home/ProjectShowcase";
 import Testimonials from "@/components/home/Testimonials";
 import GlobeVisualization from "@/components/home/GlobeVisualization";
+import SocialProofWidget from "@/components/home/SocialProofWidget";
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <SocialProofWidget />
         <section className="py-16 px-4">
           <GlobeVisualization />
         </section>

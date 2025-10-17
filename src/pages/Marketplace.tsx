@@ -21,9 +21,12 @@ import {
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import CreditAvailabilityBadge from "@/components/marketplace/CreditAvailabilityBadge";
+import InteractivePricingSlider from "@/components/marketplace/InteractivePricingSlider";
 
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
   const { role, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -330,11 +333,27 @@ const Marketplace = () => {
                 </Button>
               </div>
 
+              {/* Interactive Pricing Sidebar for Corporate/Firm */}
+              {selectedProject && (role === "corporate" || role === "firm") && (
+                <div className="mb-6">
+                  <InteractivePricingSlider
+                    projectTitle={selectedProject.title}
+                    pricePerCredit={selectedProject.pricePerCredit}
+                    maxCredits={selectedProject.creditsAvailable}
+                    onPurchase={(credits, total) => {
+                      console.log(`Purchasing ${credits} credits for $${total}`);
+                      setSelectedProject(null);
+                    }}
+                  />
+                </div>
+              )}
+
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(role === "individual" ? contributionProjects : projects).map((project: any) => (
                   <Card
                     key={project.id}
-                    className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30"
+                    className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30 cursor-pointer"
+                    onClick={() => role !== "individual" && setSelectedProject(project)}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -374,6 +393,17 @@ const Marketplace = () => {
                             {project.impact}
                           </span>
                         </div>
+                        
+                        {/* Credit Availability Badge for Corporate/Firm */}
+                        {role !== "individual" && project.creditsAvailable && (
+                          <div className="mb-2">
+                            <CreditAvailabilityBadge 
+                              available={project.creditsAvailable} 
+                              total={project.creditsAvailable + 10000}
+                            />
+                          </div>
+                        )}
+                        
                         {role === "individual" ? (
                           <>
                             <div className="flex justify-between text-sm">
