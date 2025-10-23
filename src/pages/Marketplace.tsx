@@ -23,6 +23,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import CreditAvailabilityBadge from "@/components/marketplace/CreditAvailabilityBadge";
 import InteractivePricingSlider from "@/components/marketplace/InteractivePricingSlider";
+import ProjectManagementModal from "@/components/marketplace/ProjectManagementModal";
 
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
@@ -333,8 +334,8 @@ const Marketplace = () => {
                 </Button>
               </div>
 
-              {/* Interactive Pricing Sidebar for Corporate/Firm */}
-              {selectedProject && (role === "corporate" || role === "firm") && (
+              {/* Interactive Pricing Sidebar for Corporate */}
+              {selectedProject && role === "corporate" && (
                 <div className="mb-6">
                   <InteractivePricingSlider
                     projectTitle={selectedProject.title}
@@ -347,6 +348,13 @@ const Marketplace = () => {
                   />
                 </div>
               )}
+
+              {/* Project Management Modal for Firms */}
+              <ProjectManagementModal 
+                project={selectedProject}
+                open={selectedProject !== null && role === "firm"}
+                onClose={() => setSelectedProject(null)}
+              />
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(role === "individual" ? contributionProjects : projects).map((project: any) => (

@@ -11,7 +11,9 @@ import FirmDashboard from "./pages/FirmDashboard";
 import CorporateDashboard from "./pages/CorporateDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import Marketplace from "./pages/Marketplace";
+import RewardsShop from "./pages/RewardsShop";
 import NotFound from "./pages/NotFound";
+import ChatbotWidget from "./components/home/ChatbotWidget";
 
 const queryClient = new QueryClient();
 
@@ -30,8 +32,10 @@ const App = () => (
             <Route path="/corporate-dashboard" element={<CorporateDashboard />} />
             <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/rewards" element={<RewardsShop />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatbotWidget />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
