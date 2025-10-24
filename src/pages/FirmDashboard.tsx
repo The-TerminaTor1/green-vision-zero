@@ -16,10 +16,12 @@ import {
 import CertificationManager from "@/components/firm/CertificationManager";
 import TransactionLedger from "@/components/firm/TransactionLedger";
 import ProjectManagementModal from "@/components/marketplace/ProjectManagementModal";
+import UploadProjectModal from "@/components/firm/UploadProjectModal";
 
 const FirmDashboard = () => {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const firmData = {
     name: "EcoForest Initiative",
@@ -109,7 +111,7 @@ const FirmDashboard = () => {
             <TabsContent value="projects">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Your Projects</h2>
-                <Button>
+                <Button onClick={() => setIsUploadModalOpen(true)} className="hover:scale-105 transition-transform">
                   <Plus className="h-4 w-4 mr-2" />
                   Upload New Project
                 </Button>
@@ -266,6 +268,11 @@ const FirmDashboard = () => {
           setIsModalOpen(false);
           setSelectedProject(null);
         }}
+      />
+      
+      <UploadProjectModal
+        open={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
       />
     </div>
   );

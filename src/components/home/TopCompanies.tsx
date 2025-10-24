@@ -55,10 +55,16 @@ const TopCompanies = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background to-secondary/20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+    <section className="py-20 bg-gradient-to-b from-background to-secondary/20 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-32 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-32 left-10 w-80 h-80 bg-success/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }} />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-16 animate-fade-in">
+          <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-success/10 text-primary border-primary/20 animate-scale-in">
             Corporate Leaders
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -69,18 +75,20 @@ const TopCompanies = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {companies.map((company, index) => (
             <Card
               key={company.name}
-              className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group"
+              className="p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative overflow-hidden group animate-slide-up border-2 hover:border-primary/30"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-success/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="relative">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white rounded-lg p-2 shadow-sm flex items-center justify-center">
+                    <div className="w-14 h-14 bg-white rounded-xl p-2.5 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ring-2 ring-primary/5">
                       <img
                         src={company.logo}
                         alt={company.name}
@@ -91,33 +99,33 @@ const TopCompanies = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-foreground">{company.name}</h3>
+                      <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-300">{company.name}</h3>
                       <p className="text-xs text-muted-foreground">{company.sector}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs font-bold bg-gradient-to-br from-primary/10 to-success/10">
                     #{index + 1}
                   </Badge>
                 </div>
 
-                <Badge className="mb-3 bg-accent/10 text-accent-foreground border-accent/20">
+                <Badge className="mb-4 bg-gradient-to-r from-accent/10 to-accent/20 text-accent-foreground border-accent/30 group-hover:scale-105 transition-transform duration-300">
                   <Award className="h-3 w-3 mr-1" />
                   {company.badge}
                 </Badge>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-primary/5 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl group-hover:shadow-md transition-shadow duration-300">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
                       <TrendingUp className="h-3 w-3" />
                       <span>Credits Purchased</span>
                     </div>
-                    <p className="text-lg font-bold text-primary">
+                    <p className="text-xl font-bold text-primary">
                       {(company.credits / 1000).toFixed(0)}K
                     </p>
                   </div>
-                  <div className="p-3 bg-success/5 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-success/5 to-success/10 rounded-xl group-hover:shadow-md transition-shadow duration-300">
                     <div className="text-xs text-muted-foreground mb-1">CO₂ Offset</div>
-                    <p className="text-lg font-bold text-success">
+                    <p className="text-xl font-bold text-success">
                       {(company.offset / 1000).toFixed(0)}K
                     </p>
                     <p className="text-xs text-muted-foreground">tons</p>
@@ -128,16 +136,17 @@ const TopCompanies = () => {
           ))}
         </div>
 
-        <Card className="p-8 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="p-3 bg-background rounded-full">
-              <Building2 className="h-8 w-8 text-primary" />
+        <Card className="p-8 bg-gradient-to-r from-primary/10 via-success/5 to-accent/10 border-primary/30 hover:shadow-xl transition-all duration-500 animate-fade-in relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="flex items-center gap-6 flex-wrap relative z-10">
+            <div className="p-4 bg-background rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <Building2 className="h-10 w-10 text-primary" />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-foreground mb-1">
+              <h3 className="text-2xl font-bold text-foreground mb-2">
                 Join Leading Organizations
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-base">
                 Partner with us to achieve your carbon neutrality goals and showcase your commitment to sustainability
               </p>
             </div>
