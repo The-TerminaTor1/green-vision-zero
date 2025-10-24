@@ -150,10 +150,10 @@ const ProjectManagementModal = ({ project, open, onClose }: ProjectManagementMod
               </div>
 
               <div
-                className={`relative border-2 border-dashed rounded-lg p-8 transition-colors ${
+                className={`relative border-2 border-dashed rounded-xl p-12 transition-all duration-300 ${
                   dragActive 
-                    ? "border-primary bg-primary/5" 
-                    : "border-border bg-secondary/20"
+                    ? "border-primary bg-primary/10 scale-[1.02]" 
+                    : "border-border bg-gradient-to-br from-secondary/40 to-secondary/20 hover:border-primary/50"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -165,15 +165,38 @@ const ProjectManagementModal = ({ project, open, onClose }: ProjectManagementMod
                   multiple
                   accept="image/*,.pdf,.doc,.docx"
                   onChange={handleFileInput}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
-                <div className="text-center">
-                  <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-lg font-semibold mb-2">
-                    Drag & Drop files here
+                <div className="text-center pointer-events-none">
+                  <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 transition-colors ${
+                    dragActive ? "bg-primary/20" : "bg-primary/10"
+                  }`}>
+                    <Upload className={`h-10 w-10 transition-colors ${
+                      dragActive ? "text-primary" : "text-primary/70"
+                    }`} />
+                  </div>
+                  <p className="text-xl font-bold mb-2 text-foreground">
+                    {dragActive ? "Drop your files here" : "Drag & Drop files here"}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    or click to browse (Images, PDF, DOC)
+                  <p className="text-sm text-muted-foreground mb-4">
+                    or click anywhere to browse
+                  </p>
+                  <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <ImageIcon className="h-3 w-3" />
+                      <span>Images</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FileCheck className="h-3 w-3" />
+                      <span>PDF</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FileCheck className="h-3 w-3" />
+                      <span>Documents</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    Max file size: 10MB per file
                   </p>
                 </div>
               </div>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
@@ -12,8 +13,14 @@ import {
   TrendingUp,
   Plus
 } from "lucide-react";
+import CertificationManager from "@/components/firm/CertificationManager";
+import TransactionLedger from "@/components/firm/TransactionLedger";
+import ProjectManagementModal from "@/components/marketplace/ProjectManagementModal";
 
 const FirmDashboard = () => {
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const firmData = {
     name: "EcoForest Initiative",
     totalCreditsIssued: 250000,
@@ -90,10 +97,11 @@ const FirmDashboard = () => {
           </div>
 
           <Tabs defaultValue="projects" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="projects">Projects</TabsTrigger>
               <TabsTrigger value="credits">Credit Bank</TabsTrigger>
               <TabsTrigger value="certifications">Certifications</TabsTrigger>
+              <TabsTrigger value="ledger">Ledger</TabsTrigger>
               <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
             </TabsList>
 
@@ -157,13 +165,16 @@ const FirmDashboard = () => {
                       </div>
 
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setIsModalOpen(true);
+                          }}
+                        >
                           <FileText className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload Proof
+                          Manage Project
                         </Button>
                       </div>
                     </div>
@@ -225,45 +236,12 @@ const FirmDashboard = () => {
 
             {/* Certifications Tab */}
             <TabsContent value="certifications">
-              <Card className="p-6">
-                <h2 className="text-2xl font-bold mb-6">
-                  Certifications & Verification
-                </h2>
-                <div className="space-y-4">
-                  <div className="p-4 border border-border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-6 w-6 text-success" />
-                        <div>
-                          <div className="font-semibold">ISO 14064 Certification</div>
-                          <div className="text-sm text-muted-foreground">
-                            Valid until Dec 2025
-                          </div>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="p-4 border border-border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-6 w-6 text-success" />
-                        <div>
-                          <div className="font-semibold">VCS Verified Carbon Standard</div>
-                          <div className="text-sm text-muted-foreground">
-                            Valid until Mar 2026
-                          </div>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+              <CertificationManager />
+            </TabsContent>
+
+            {/* Ledger Tab */}
+            <TabsContent value="ledger">
+              <TransactionLedger />
             </TabsContent>
 
             {/* Marketplace Tab */}
@@ -280,6 +258,15 @@ const FirmDashboard = () => {
         </div>
       </main>
       <Footer />
+      
+      <ProjectManagementModal
+        project={selectedProject}
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProject(null);
+        }}
+      />
     </div>
   );
 };

@@ -6,6 +6,8 @@ import ImpactStats from "@/components/home/ImpactStats";
 import ProjectShowcase from "@/components/home/ProjectShowcase";
 import Testimonials from "@/components/home/Testimonials";
 import SocialProofWidget from "@/components/home/SocialProofWidget";
+import TopCompanies from "@/components/home/TopCompanies";
+import TopContributors from "@/components/home/TopContributors";
 
 const Index = () => {
   return (
@@ -14,9 +16,11 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <SocialProofWidget />
+        <TopCompanies />
         <HowItWorks />
         <ImpactStats />
         <ProjectShowcase />
+        <TopContributors />
         <Testimonials />
       </main>
       <Footer />

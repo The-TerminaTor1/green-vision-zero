@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,8 @@ import {
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
 const CorporateDashboard = () => {
+  const navigate = useNavigate();
+  
   const corporateData = {
     company: "Global Industries Corp",
     creditBalance: 85000,
@@ -188,7 +191,7 @@ const CorporateDashboard = () => {
                       </p>
                     </div>
 
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={() => navigate('/marketplace')}>
                       <ShoppingCart className="h-4 w-4 mr-2" />
                       Purchase More Credits
                     </Button>
@@ -226,7 +229,9 @@ const CorporateDashboard = () => {
                 <p className="text-muted-foreground mb-6">
                   Browse verified projects and purchase credits to offset your emissions.
                 </p>
-                <Button size="lg">Go to Marketplace</Button>
+                <Button size="lg" onClick={() => navigate('/marketplace')}>
+                  Go to Marketplace
+                </Button>
               </Card>
             </TabsContent>
 
