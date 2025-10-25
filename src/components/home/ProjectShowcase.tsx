@@ -54,17 +54,18 @@ const ProjectShowcase = () => {
           {projects.map((project, index) => (
             <Card
               key={project.id}
-              className="overflow-hidden hover:shadow-xl transition-all duration-300 animate-slide-up border-2 hover:border-primary/30"
+              className="overflow-hidden hover:shadow-2xl transition-all duration-500 animate-slide-up border-2 hover:border-primary/30 hover:-translate-y-2 group"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="relative h-48 overflow-hidden">
                 <img
                   src={project.image}
                   alt={project.title}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 {project.verified && (
-                  <Badge className="absolute top-3 right-3 bg-success text-success-foreground">
+                  <Badge className="absolute top-3 right-3 bg-success text-success-foreground group-hover:scale-110 transition-transform duration-300">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>
@@ -109,8 +110,8 @@ const ProjectShowcase = () => {
           ))}
         </div>
 
-        <div className="text-center">
-          <Button size="lg" variant="outline" asChild>
+        <div className="text-center animate-bounce-slow">
+          <Button size="lg" variant="outline" asChild className="hover:scale-105 transition-transform duration-300">
             <Link to="/marketplace">
               View All Projects
               <ArrowRight className="ml-2 h-5 w-5" />

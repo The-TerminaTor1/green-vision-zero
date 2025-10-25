@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { TrendingUp, Award, Building2 } from "lucide-react";
 
 const TopCompanies = () => {
@@ -108,7 +109,13 @@ const TopCompanies = () => {
                   </Badge>
                 </div>
 
-                <Badge className="mb-4 bg-gradient-to-r from-accent/10 to-accent/20 text-accent-foreground border-accent/30 group-hover:scale-105 transition-transform duration-300">
+                <Badge className={`mb-4 border group-hover:scale-105 transition-transform duration-300 ${
+                  company.badge === "Platinum Partner" 
+                    ? "bg-gradient-to-r from-slate-300 to-slate-400 text-slate-900 border-slate-400" 
+                    : company.badge === "Gold Partner"
+                    ? "bg-gradient-to-r from-yellow-400 to-amber-500 text-amber-950 border-yellow-500"
+                    : "bg-gradient-to-r from-slate-400 to-slate-500 text-slate-900 border-slate-500"
+                }`}>
                   <Award className="h-3 w-3 mr-1" />
                   {company.badge}
                 </Badge>
@@ -138,18 +145,27 @@ const TopCompanies = () => {
 
         <Card className="p-8 bg-gradient-to-r from-primary/10 via-success/5 to-accent/10 border-primary/30 hover:shadow-xl transition-all duration-500 animate-fade-in relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="flex items-center gap-6 flex-wrap relative z-10">
-            <div className="p-4 bg-background rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <Building2 className="h-10 w-10 text-primary" />
+          <div className="flex items-center gap-6 flex-wrap justify-between relative z-10">
+            <div className="flex items-center gap-6 flex-1">
+              <div className="p-4 bg-background rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <Building2 className="h-10 w-10 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
+                  Join Leading Organizations
+                </h3>
+                <p className="text-muted-foreground text-base">
+                  Partner with us to achieve your carbon neutrality goals and showcase your commitment to sustainability
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
-                Join Leading Organizations
-              </h3>
-              <p className="text-muted-foreground text-base">
-                Partner with us to achieve your carbon neutrality goals and showcase your commitment to sustainability
-              </p>
-            </div>
+            <Button 
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+              onClick={() => window.location.href = '/login?tab=register'}
+            >
+              Register Now
+            </Button>
           </div>
         </Card>
       </div>

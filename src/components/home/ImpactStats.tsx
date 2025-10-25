@@ -55,15 +55,17 @@ const ImpactStats = () => {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={`bg-card rounded-2xl p-8 text-center shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/30 ${
+              className={`bg-card rounded-2xl p-8 text-center shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/30 hover:-translate-y-2 group ${
                 isVisible ? "animate-scale-in" : "opacity-0"
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className={`w-14 h-14 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4`}>
+              <div className={`w-14 h-14 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 animate-float`}
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
                 <stat.icon className={`h-7 w-7 ${stat.color}`} />
               </div>
-              <div className={`text-3xl md:text-4xl font-bold ${stat.color} mb-2`}>
+              <div className={`text-3xl md:text-4xl font-bold ${stat.color} mb-2 group-hover:scale-105 transition-transform duration-300`}>
                 {stat.value}
                 <span className="text-2xl">{stat.suffix}</span>
               </div>

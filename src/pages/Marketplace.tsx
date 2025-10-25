@@ -28,6 +28,10 @@ import ProjectManagementModal from "@/components/marketplace/ProjectManagementMo
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [verifiedOnly, setVerifiedOnly] = useState(true);
+  const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
   const { role, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -36,6 +40,36 @@ const Marketplace = () => {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
+
+  const applyFilters = () => {
+    const baseProjects = role === "individual" ? contributionProjects : projects;
+    
+    let filtered = baseProjects.filter((project: any) => {
+      // Search filter
+      const matchesSearch = searchQuery === "" || 
+        project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.provider.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Type filter
+      const matchesType = selectedTypes.length === 0 || selectedTypes.includes(project.type);
+      
+      // Price filter
+      const projectPrice = role === "individual" ? project.price / 100 : project.pricePerCredit;
+      const matchesPrice = projectPrice >= priceRange[0] && projectPrice <= priceRange[1];
+      
+      // Verified filter
+      const matchesVerified = !verifiedOnly || project.verified;
+      
+      return matchesSearch && matchesType && matchesPrice && matchesVerified;
+    });
+    
+    setFilteredProjects(filtered);
+  };
+
+  // Initialize filtered projects
+  useEffect(() => {
+    applyFilters();
+  }, [role]);
 
   const contributionProjects = [
     {
@@ -240,7 +274,12 @@ const Marketplace = () => {
                   <Label className="mb-2 block">Search</Label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search projects..." className="pl-9" />
+                    <Input 
+                      placeholder="Search projects..." 
+                      className="pl-9" 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                   </div>
                 </div>
 
@@ -250,7 +289,17 @@ const Marketplace = () => {
                   <div className="space-y-3">
                     {projectTypes.map((type) => (
                       <div key={type} className="flex items-center space-x-2">
-                        <Checkbox id={type} />
+                        <Checkbox 
+                          id={type}
+                          checked={selectedTypes.includes(type)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedTypes([...selectedTypes, type]);
+                            } else {
+                              setSelectedTypes(selectedTypes.filter(t => t !== type));
+                            }
+                          }}
+                        />
                         <label
                           htmlFor={type}
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
@@ -278,8 +327,12 @@ const Marketplace = () => {
                 </div>
 
                 {/* Verification Toggle */}
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="verified" defaultChecked />
+                <div className="flex items-center space-x-2 mb-6">
+                  <Checkbox 
+                    id="verified" 
+                    checked={verifiedOnly}
+                    onCheckedChange={(checked) => setVerifiedOnly(checked as boolean)}
+                  />
                   <label
                     htmlFor="verified"
                     className="text-sm font-medium leading-none cursor-pointer flex items-center gap-1"
@@ -288,6 +341,15 @@ const Marketplace = () => {
                     Verified Only
                   </label>
                 </div>
+
+                {/* Apply Filters Button */}
+                <Button 
+                  className="w-full bg-primary hover:bg-primary/90" 
+                  onClick={applyFilters}
+                >
+                  <Filter className="h-4 w-4 mr-2" />
+                  Apply Filters
+                </Button>
               </Card>
 
               {/* How it Works */}
@@ -325,7 +387,7 @@ const Marketplace = () => {
                     {role === "firm" ? "Your Projects" : "Available Projects"}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    {projects.length} projects {role === "firm" ? "listed" : "found"}
+                    {filteredProjects.length > 0 ? filteredProjects.length : (role === "individual" ? contributionProjects.length : projects.length)} projects {role === "firm" ? "listed" : "found"}
                   </p>
                 </div>
                 <Button variant="outline">
@@ -357,7 +419,7 @@ const Marketplace = () => {
               />
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(role === "individual" ? contributionProjects : projects).map((project: any) => (
+                {(filteredProjects.length > 0 ? filteredProjects : (role === "individual" ? contributionProjects : projects)).map((project: any) => (
                   <Card
                     key={project.id}
                     className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30 cursor-pointer"

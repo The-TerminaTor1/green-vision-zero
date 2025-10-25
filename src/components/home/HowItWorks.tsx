@@ -56,15 +56,10 @@ const HowItWorks = () => {
             >
               {/* Animated gradient background */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-success/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              {/* Step Number */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-success text-primary-foreground font-bold flex items-center justify-center text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
-                {index + 1}
-              </div>
 
               {/* Connecting Line (except for last card) */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-primary to-transparent" />
+                <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-primary to-transparent animate-pulse" />
               )}
 
               {/* Icon */}
