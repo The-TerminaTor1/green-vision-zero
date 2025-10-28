@@ -73,29 +73,32 @@ const TopContributors = () => {
         </div>
 
         <div className="grid lg:grid-cols-5 gap-6 mb-12">
-          {contributors.map((contributor) => (
+          {contributors.map((contributor, index) => (
             <Card
               key={contributor.name}
-              className={`p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${
+              className={`p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 group animate-scale-in relative overflow-hidden ${
                 contributor.rank <= 3
                   ? "border-2 border-primary/30 bg-gradient-to-b from-primary/5 to-background"
                   : ""
               }`}
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="text-center">
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-success/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="text-center relative z-10">
                 <div className="relative inline-block mb-4">
-                  <Avatar className="w-20 h-20 border-4 border-background shadow-lg">
+                  <Avatar className="w-20 h-20 border-4 border-background shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <AvatarImage src={contributor.avatar} alt={contributor.name} />
                     <AvatarFallback>{contributor.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
                   </Avatar>
                   {contributor.rank <= 3 && (
                     <div
-                      className={`absolute -top-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center ${
+                      className={`absolute -top-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center animate-bounce-slow ${
                         contributor.rank === 1
-                          ? "bg-gradient-to-br from-yellow-400 to-yellow-600"
+                          ? "bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/50"
                           : contributor.rank === 2
-                          ? "bg-gradient-to-br from-gray-300 to-gray-500"
-                          : "bg-gradient-to-br from-orange-400 to-orange-600"
+                          ? "bg-gradient-to-br from-gray-300 to-gray-500 shadow-lg shadow-gray-400/50"
+                          : "bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg shadow-orange-500/50"
                       }`}
                     >
                       <Trophy className="h-4 w-4 text-white" />
@@ -116,24 +119,25 @@ const TopContributors = () => {
                 </Badge>
 
                 <div className="space-y-3">
-                  <div className="p-3 bg-secondary/50 rounded-lg">
-                    <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
-                      <Leaf className="h-3 w-3" />
+                  <div className="p-3 bg-secondary/50 rounded-lg group-hover:shadow-lg transition-shadow duration-300 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-success/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1 relative z-10">
+                      <Leaf className="h-3 w-3 animate-wiggle" />
                       <span>Credits Earned</span>
                     </div>
-                    <p className="text-xl font-bold text-primary">
+                    <p className="text-xl font-bold text-primary group-hover:scale-110 transition-transform relative z-10">
                       {contributor.credits.toLocaleString()}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-center">
-                    <div className="p-2 bg-secondary/30 rounded">
+                    <div className="p-2 bg-secondary/30 rounded hover:bg-secondary/50 transition-colors group/stat">
                       <p className="text-xs text-muted-foreground">Projects</p>
-                      <p className="text-sm font-bold text-foreground">{contributor.projects}</p>
+                      <p className="text-sm font-bold text-foreground group-hover/stat:scale-110 transition-transform">{contributor.projects}</p>
                     </div>
-                    <div className="p-2 bg-secondary/30 rounded">
+                    <div className="p-2 bg-secondary/30 rounded hover:bg-secondary/50 transition-colors group/stat">
                       <p className="text-xs text-muted-foreground">CO₂ Impact</p>
-                      <p className="text-sm font-bold text-success">{contributor.impact}T</p>
+                      <p className="text-sm font-bold text-success group-hover/stat:scale-110 transition-transform">{contributor.impact}T</p>
                     </div>
                   </div>
                 </div>
@@ -142,13 +146,13 @@ const TopContributors = () => {
           ))}
         </div>
 
-        <Card className="p-8 bg-gradient-to-r from-success/5 to-primary/5 border-success/20">
+        <Card className="p-8 bg-gradient-to-r from-success/5 to-primary/5 border-success/20 hover:shadow-2xl transition-all duration-500 animate-fade-in group">
           <div className="flex items-center gap-4 flex-wrap justify-center text-center">
-            <div className="p-3 bg-background rounded-full">
-              <TrendingUp className="h-8 w-8 text-success" />
+            <div className="p-3 bg-background rounded-full group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <TrendingUp className="h-8 w-8 text-success animate-float" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-foreground mb-1">
+              <h3 className="text-xl font-bold text-foreground mb-1 group-hover:scale-105 transition-transform">
                 Join the Leaderboard
               </h3>
               <p className="text-muted-foreground">

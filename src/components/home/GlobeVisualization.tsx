@@ -21,16 +21,19 @@ const GlobeVisualization = () => {
 
   return (
     <div className="relative w-full max-w-4xl mx-auto">
-      <div className="relative bg-gradient-to-b from-primary/5 to-accent/5 rounded-2xl p-8 overflow-hidden">
-        {/* Decorative elements */}
+      <div className="relative bg-gradient-to-b from-primary/5 to-accent/5 rounded-2xl p-8 overflow-hidden border border-primary/10 shadow-xl">
+        {/* Decorative elements with animations */}
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse-scale" />
+          <div className="absolute bottom-10 right-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl animate-pulse-scale" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-success/5 rounded-full blur-3xl animate-pulse-scale" style={{ animationDelay: '0.5s' }} />
         </div>
 
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-3">Global Net Zero Contributions</h2>
-          <p className="text-center text-muted-foreground mb-8">
+          <h2 className="text-3xl font-bold text-center mb-3 animate-fade-in">
+            Global Net Zero Contributions
+          </h2>
+          <p className="text-center text-muted-foreground mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Countries colored by their contribution to net zero emissions
           </p>
 
@@ -53,7 +56,7 @@ const GlobeVisualization = () => {
               ))}
             </defs>
 
-            {/* Globe circle */}
+            {/* Globe circle with pulsing effect */}
             <circle
               cx="400"
               cy="200"
@@ -62,6 +65,7 @@ const GlobeVisualization = () => {
               stroke="hsl(var(--primary))"
               strokeWidth="2"
               opacity="0.3"
+              className="animate-pulse-scale"
             />
 
             {/* Latitude lines */}
@@ -93,21 +97,22 @@ const GlobeVisualization = () => {
               />
             ))}
 
-            {/* Country shapes */}
+            {/* Country shapes with enhanced animations */}
             {countries.map((country, index) => (
-              <g key={country.name}>
+              <g key={country.name} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
                 <path
                   d={country.path}
                   fill={`url(#${getGradientId(index)})`}
                   stroke="hsl(var(--background))"
                   strokeWidth="2"
-                  className="transition-all duration-300 cursor-pointer hover:opacity-100"
+                  className="transition-all duration-500 cursor-pointer hover:opacity-100"
                   opacity={hoveredCountry === country.name ? 1 : 0.85}
                   onMouseEnter={() => setHoveredCountry(country.name)}
                   onMouseLeave={() => setHoveredCountry(null)}
                   style={{
-                    transform: hoveredCountry === country.name ? "scale(1.05)" : "scale(1)",
+                    transform: hoveredCountry === country.name ? "scale(1.1)" : "scale(1)",
                     transformOrigin: "center",
+                    filter: hoveredCountry === country.name ? "drop-shadow(0 0 10px rgba(34, 197, 94, 0.6))" : "none",
                   }}
                 />
               </g>
@@ -134,11 +139,11 @@ const GlobeVisualization = () => {
             </div>
           </div>
 
-          {/* Hover info */}
+          {/* Hover info with enhanced animations */}
           {hoveredCountry && (
             <div className="mt-6 text-center">
-              <div className="inline-block bg-card border border-border rounded-lg px-6 py-3 shadow-lg animate-fade-in">
-                <p className="font-semibold text-lg">{hoveredCountry}</p>
+              <div className="inline-block bg-card border-2 border-primary/30 rounded-lg px-6 py-3 shadow-2xl animate-scale-in animate-glow-pulse">
+                <p className="font-semibold text-lg gradient-text">{hoveredCountry}</p>
                 <p className="text-muted-foreground text-sm">
                   {countries.find(c => c.name === hoveredCountry)?.contribution}% contribution to Net Zero
                 </p>
