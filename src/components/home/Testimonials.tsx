@@ -10,7 +10,7 @@ const Testimonials = () => {
       company: "EcoTech Solutions",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       content:
-        "GreenVision has transformed how we approach carbon offsetting. The transparency and verification process gives us complete confidence in our contributions.",
+        "Nirmal Carbon has transformed how we approach carbon offsetting. The transparency and verification process gives us complete confidence in our contributions.",
       rating: 5,
     },
     {

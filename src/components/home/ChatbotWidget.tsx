@@ -17,7 +17,7 @@ const ChatbotWidget = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hi! I'm GreenVision Assistant. How can I help you today?",
+      text: "Hi! I'm Nirmal Carbon Assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -72,7 +72,7 @@ const ChatbotWidget = () => {
     } else if (lowerQuestion.includes("firm") || lowerQuestion.includes("upload")) {
       return "Firms can upload and manage projects through the Marketplace. You'll need verification documents, project details, and proof of impact. Our team reviews all submissions within 48 hours.";
     } else {
-      return "That's a great question! For detailed information, please visit our Help Center or contact our support team at support@greenvision.com. Is there anything specific about our platform I can help you with?";
+      return "That's a great question! For detailed information, please visit our Help Center or contact our support team at support@nirmalcarbon.com. Is there anything specific about our platform I can help you with?";
     }
   };
 
@@ -104,7 +104,7 @@ const ChatbotWidget = () => {
                 <Bot className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-semibold">GreenVision Assistant</h3>
+                <h3 className="font-semibold">Nirmal Carbon Assistant</h3>
                 <p className="text-xs opacity-90">Online</p>
               </div>
             </div>
