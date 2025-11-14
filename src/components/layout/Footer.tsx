@@ -46,7 +46,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary mb-4">
               <Leaf className="h-6 w-6" />
-              <span>Nirmal Carbon</span>
+              <span>Green Vision</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4 max-w-md">
               Join the journey to Net Zero emissions. Together, we can create a sustainable future
@@ -87,7 +87,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Nirmal Carbon. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Green Vision. All rights reserved.</p>
         </div>
       </div>
     </footer>
