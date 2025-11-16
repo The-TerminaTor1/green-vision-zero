@@ -13,17 +13,11 @@ import {
   CheckCircle, 
   ShoppingCart,
   Filter,
-  TrendingUp,
-  Upload,
-  DollarSign,
-  Eye
+  TrendingUp
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import CreditAvailabilityBadge from "@/components/marketplace/CreditAvailabilityBadge";
-import InteractivePricingSlider from "@/components/marketplace/InteractivePricingSlider";
-import ProjectManagementModal from "@/components/marketplace/ProjectManagementModal";
 
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
@@ -42,7 +36,7 @@ const Marketplace = () => {
   }, [isAuthenticated, navigate]);
 
   const applyFilters = () => {
-    const baseProjects = role === "individual" ? contributionProjects : projects;
+    const baseProjects = contributionProjects;
     
     let filtered = baseProjects.filter((project: any) => {
       // Search filter
@@ -54,7 +48,7 @@ const Marketplace = () => {
       const matchesType = selectedTypes.length === 0 || selectedTypes.includes(project.type);
       
       // Price filter
-      const projectPrice = role === "individual" ? project.price / 100 : project.pricePerCredit;
+      const projectPrice = project.price / 100;
       const matchesPrice = projectPrice >= priceRange[0] && projectPrice <= priceRange[1];
       
       // Verified filter
@@ -314,7 +308,7 @@ const Marketplace = () => {
                 {/* Price Range */}
                 <div className="mb-6">
                   <Label className="mb-3 block">
-                    Price per Credit: ${priceRange[0]} - ${priceRange[1]}
+                    Price per Credit: ₹{priceRange[0]} - ₹{priceRange[1]}
                   </Label>
                   <Slider
                     min={0}
@@ -366,28 +360,14 @@ const Marketplace = () => {
 
             {/* Main Content */}
             <div className="flex-1">
-              {role === "firm" && (
-                <Card className="p-6 mb-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-2 border-blue-500/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-foreground mb-2">Your Projects</h3>
-                      <p className="text-muted-foreground">Upload new projects and manage existing ones</p>
-                    </div>
-                    <Button className="bg-blue-600 hover:bg-blue-700">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Project
-                    </Button>
-                  </div>
-                </Card>
-              )}
               
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    {role === "firm" ? "Your Projects" : "Available Projects"}
+                    Available Projects
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    {filteredProjects.length > 0 ? filteredProjects.length : (role === "individual" ? contributionProjects.length : projects.length)} projects {role === "firm" ? "listed" : "found"}
+                    {filteredProjects.length > 0 ? filteredProjects.length : contributionProjects.length} projects found
                   </p>
                 </div>
                 <Button variant="outline">
@@ -396,34 +376,11 @@ const Marketplace = () => {
                 </Button>
               </div>
 
-              {/* Interactive Pricing Sidebar for Corporate */}
-              {selectedProject && role === "corporate" && (
-                <div className="mb-6">
-                  <InteractivePricingSlider
-                    projectTitle={selectedProject.title}
-                    pricePerCredit={selectedProject.pricePerCredit}
-                    maxCredits={selectedProject.creditsAvailable}
-                    onPurchase={(credits, total) => {
-                      console.log(`Purchasing ${credits} credits for $${total}`);
-                      setSelectedProject(null);
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Project Management Modal for Firms */}
-              <ProjectManagementModal 
-                project={selectedProject}
-                open={selectedProject !== null && role === "firm"}
-                onClose={() => setSelectedProject(null)}
-              />
-
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(filteredProjects.length > 0 ? filteredProjects : (role === "individual" ? contributionProjects : projects)).map((project: any) => (
+                {(filteredProjects.length > 0 ? filteredProjects : contributionProjects).map((project: any) => (
                   <Card
                     key={project.id}
-                    className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30 cursor-pointer"
-                    onClick={() => role !== "individual" && setSelectedProject(project)}
+                    className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -464,67 +421,24 @@ const Marketplace = () => {
                           </span>
                         </div>
                         
-                        {/* Credit Availability Badge for Corporate/Firm */}
-                        {role !== "individual" && project.creditsAvailable && (
-                          <div className="mb-2">
-                            <CreditAvailabilityBadge 
-                              available={project.creditsAvailable} 
-                              total={project.creditsAvailable + 10000}
-                            />
-                          </div>
-                        )}
-                        
-                        {role === "individual" ? (
-                          <>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Credits Earned</span>
-                              <span className="font-semibold text-primary">
-                                {project.credits} credits
-                              </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Contribution</span>
-                              <span className="font-semibold text-lg text-primary">
-                                ₹{project.price}
-                              </span>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Available</span>
-                              <span className="font-semibold">
-                                {project.creditsAvailable?.toLocaleString()} credits
-                              </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">Price</span>
-                              <span className="font-semibold text-primary">
-                                ${project.pricePerCredit}/credit
-                              </span>
-                            </div>
-                          </>
-                        )}
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Credits Earned</span>
+                          <span className="font-semibold text-primary">
+                            {project.credits} credits
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Contribution</span>
+                          <span className="font-semibold text-lg text-primary">
+                            ₹{project.price}
+                          </span>
+                        </div>
                       </div>
 
-                      {role === "individual" && (
-                        <Button className="w-full">
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Contribute ₹{project.price}
-                        </Button>
-                      )}
-                      {role === "corporate" && (
-                        <Button className="w-full">
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Buy Credits
-                        </Button>
-                      )}
-                      {role === "firm" && (
-                        <Button className="w-full" variant="secondary">
-                          <DollarSign className="h-4 w-4 mr-2" />
-                          Manage Project
-                        </Button>
-                      )}
+                      <Button className="w-full">
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Contribute ₹{project.price}
+                      </Button>
                     </div>
                   </Card>
                 ))}

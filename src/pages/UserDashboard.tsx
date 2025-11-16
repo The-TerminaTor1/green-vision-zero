@@ -104,7 +104,7 @@ const UserDashboard = () => {
                   <div className="text-xs text-muted-foreground">Tons CO₂</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-earth">${userData.totalContributions}</div>
+                  <div className="text-2xl font-bold text-earth">₹{userData.totalContributions}</div>
                   <div className="text-xs text-muted-foreground">Contributed</div>
                 </div>
               </div>
@@ -178,7 +178,7 @@ const UserDashboard = () => {
                       </div>
                       <Progress value={75} className="h-2" />
                       <p className="text-xs text-muted-foreground mt-1">
-                        $750 of $1,000 goal
+                        ₹750 of ₹1,000 goal
                       </p>
                     </div>
 
@@ -230,7 +230,7 @@ const UserDashboard = () => {
                       </div>
                       <div className="text-right mr-4">
                         <div className="font-semibold text-primary">
-                          ${contribution.amount}
+                          ₹{contribution.amount}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {contribution.amount / 2} credits

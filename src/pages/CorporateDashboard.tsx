@@ -103,9 +103,8 @@ const CorporateDashboard = () => {
           </div>
 
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="marketplace">Purchase Credits</TabsTrigger>
               <TabsTrigger value="history">Purchase History</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
@@ -198,41 +197,6 @@ const CorporateDashboard = () => {
                   </div>
                 </Card>
               </div>
-
-              {/* Credit Wallet */}
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <Wallet className="h-8 w-8 text-primary" />
-                    <div>
-                      <h3 className="text-xl font-bold">Credit Wallet</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Available carbon credits
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-primary">
-                      {corporateData.creditBalance.toLocaleString()}
-                    </div>
-                    <div className="text-sm text-muted-foreground">credits available</div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            {/* Marketplace Tab */}
-            <TabsContent value="marketplace">
-              <Card className="p-6 text-center">
-                <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-primary" />
-                <h3 className="text-xl font-bold mb-2">Purchase Carbon Credits</h3>
-                <p className="text-muted-foreground mb-6">
-                  Browse verified projects and purchase credits to offset your emissions.
-                </p>
-                <Button size="lg" onClick={() => navigate('/marketplace')}>
-                  Go to Marketplace
-                </Button>
-              </Card>
             </TabsContent>
 
             {/* Purchase History Tab */}
@@ -260,7 +224,7 @@ const CorporateDashboard = () => {
                           {purchase.credits.toLocaleString()} credits
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          ${(purchase.cost / 1000).toFixed(0)}K
+                          ₹{(purchase.cost / 1000).toFixed(0)}K
                         </div>
                       </div>
                       {purchase.certificate && (
@@ -277,31 +241,16 @@ const CorporateDashboard = () => {
 
             {/* Reports Tab */}
             <TabsContent value="reports">
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="p-6">
-                  <FileText className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-xl font-bold mb-2">ESG Report</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Comprehensive Environmental, Social, and Governance report
-                  </p>
-                  <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Report
-                  </Button>
-                </Card>
-
-                <Card className="p-6">
-                  <FileText className="h-12 w-12 text-success mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Carbon Footprint Analysis</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Detailed breakdown of your carbon offset activities
-                  </p>
-                  <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Report
-                  </Button>
-                </Card>
-              </div>
+              <Card className="p-6 text-center">
+                <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-2xl font-bold mb-2">Reports Not Accessible</h3>
+                <p className="text-muted-foreground mb-4">
+                  Report generation features are currently unavailable.
+                </p>
+                <Button variant="outline" disabled>
+                  Coming Soon
+                </Button>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
