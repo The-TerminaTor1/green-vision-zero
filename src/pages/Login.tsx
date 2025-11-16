@@ -95,7 +95,7 @@ const Login = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
           <Leaf className="h-12 w-12 text-primary" />
-          <h1 className="text-4xl font-bold text-foreground">Green Vision</h1>
+          <h1 className="text-4xl font-bold text-foreground">Nirmal Carbon</h1>
         </div>
         <p className="text-muted-foreground">Join the journey to Net Zero emissions</p>
       </div>

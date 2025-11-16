@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
@@ -19,9 +20,18 @@ import ProjectManagementModal from "@/components/marketplace/ProjectManagementMo
 import UploadProjectModal from "@/components/firm/UploadProjectModal";
 
 const FirmDashboard = () => {
+  const location = useLocation();
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if we should open the upload modal
+    const params = new URLSearchParams(location.search);
+    if (params.get('upload') === 'true') {
+      setIsUploadModalOpen(true);
+    }
+  }, [location]);
 
   const firmData = {
     name: "EcoForest Initiative",
@@ -91,7 +101,7 @@ const FirmDashboard = () => {
               </Card>
               <Card className="p-6">
                 <div className="text-2xl font-bold text-accent-foreground mb-1">
-                  ${(firmData.revenue / 1000).toFixed(0)}K
+                  ₹{(firmData.revenue / 1000).toFixed(0)}K
                 </div>
                 <div className="text-sm text-muted-foreground">Total Revenue</div>
               </Card>
@@ -99,12 +109,10 @@ const FirmDashboard = () => {
           </div>
 
           <Tabs defaultValue="projects" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="projects">Projects</TabsTrigger>
               <TabsTrigger value="credits">Credit Bank</TabsTrigger>
-              <TabsTrigger value="certifications">Certifications</TabsTrigger>
               <TabsTrigger value="ledger">Ledger</TabsTrigger>
-              <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
             </TabsList>
 
             {/* Projects Tab */}
@@ -236,25 +244,9 @@ const FirmDashboard = () => {
               </Card>
             </TabsContent>
 
-            {/* Certifications Tab */}
-            <TabsContent value="certifications">
-              <CertificationManager />
-            </TabsContent>
-
             {/* Ledger Tab */}
             <TabsContent value="ledger">
               <TransactionLedger />
-            </TabsContent>
-
-            {/* Marketplace Tab */}
-            <TabsContent value="marketplace">
-              <Card className="p-6">
-                <h2 className="text-2xl font-bold mb-6">Marketplace Listing</h2>
-                <p className="text-muted-foreground mb-6">
-                  Preview how your projects appear to buyers in the marketplace.
-                </p>
-                <Button>View Live Listings</Button>
-              </Card>
             </TabsContent>
           </Tabs>
         </div>

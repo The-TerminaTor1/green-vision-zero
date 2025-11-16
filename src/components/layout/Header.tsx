@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, Menu, X, LogOut, User, Building2, ShoppingBag, LayoutDashboard } from "lucide-react";
+import { Leaf, Menu, X, LogOut, User, Building2, ShoppingBag, LayoutDashboard, Upload } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -19,13 +19,20 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { role, isAuthenticated, logout } = useAuth();
   
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Marketplace", path: "/marketplace" },
-    { name: "Rewards", path: "/rewards" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
-  ];
+  const getNavItems = () => {
+    const baseItems = [
+      { name: "Home", path: "/" },
+      { name: "Marketplace", path: "/marketplace" },
+    ];
+    
+    if (role === "individual") {
+      baseItems.push({ name: "Rewards", path: "/rewards" });
+    }
+    
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -70,7 +77,7 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
             <Leaf className="h-6 w-6" />
-            <span>Green Vision</span>
+            <span>Nirmal Carbon</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -107,6 +114,15 @@ const Header = () => {
                       <LayoutDashboard className="h-4 w-4 mr-2" />
                       Dashboard
                     </DropdownMenuItem>
+                    {role === "firm" && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => navigate("/firm-dashboard?upload=true")}>
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload Project
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                       <LogOut className="h-4 w-4 mr-2" />

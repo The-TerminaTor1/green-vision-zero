@@ -17,7 +17,7 @@ const ChatbotWidget = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hi! I'm Green Vision Assistant. How can I help you today?",
+      text: "Hi! I'm Nirmal Carbon Assistant. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -68,11 +68,11 @@ const ChatbotWidget = () => {
     } else if (lowerQuestion.includes("reward")) {
       return "Earn credits by contributing to projects, then redeem them in our Rewards Shop for gift cards, eco-friendly products, and exclusive offers from partner brands!";
     } else if (lowerQuestion.includes("price") || lowerQuestion.includes("cost")) {
-      return "Prices vary by project type. Individual contributions start from ₹399, while corporate credit purchases range from $8-18 per credit depending on the project.";
+      return "Prices vary by project type. Individual contributions start from ₹399, while corporate credit purchases range from ₹8-18 per credit depending on the project.";
     } else if (lowerQuestion.includes("firm") || lowerQuestion.includes("upload")) {
       return "Firms can upload and manage projects through the Marketplace. You'll need verification documents, project details, and proof of impact. Our team reviews all submissions within 48 hours.";
     } else {
-      return "That's a great question! For detailed information, please visit our Help Center or contact our support team at support@greenvision.com. Is there anything specific about our platform I can help you with?";
+      return "That's a great question! For detailed information, please visit our Help Center or contact our support team at support@nirmalcarbon.com. Is there anything specific about our platform I can help you with?";
     }
   };
 
