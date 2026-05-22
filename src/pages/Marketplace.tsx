@@ -472,7 +472,7 @@ const Marketplace = () => {
                         </div>
                       </div>
 
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={() => setContributeProject(project)}>
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         Contribute ₹{project.price}
                       </Button>
