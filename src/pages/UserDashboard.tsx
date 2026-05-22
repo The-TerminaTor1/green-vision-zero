@@ -3,21 +3,26 @@ import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Award, 
-  TrendingUp, 
-  TreeDeciduous, 
+import {
+  Award,
+  TrendingUp,
+  TreeDeciduous,
   Gift,
   CheckCircle,
   Trophy,
-  Target
+  Target,
+  Clock,
 } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import ProgressiveContributionTracker from "@/components/dashboard/ProgressiveContributionTracker";
+import CertificateModal from "@/components/dashboard/CertificateModal";
+import { useState } from "react";
 
 const UserDashboard = () => {
+  const [selectedCert, setSelectedCert] = useState<any>(null);
   const userData = {
     name: "Alex Thompson",
     email: "alex.thompson@email.com",
@@ -211,46 +216,119 @@ const UserDashboard = () => {
             {/* Contributions Tab */}
             <TabsContent value="contributions">
               <Card className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-6">
-                  Recent Contributions
-                </h3>
-                <div className="space-y-4">
-                  {recentContributions.map((contribution) => (
-                    <div
-                      key={contribution.id}
-                      className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary/30 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-foreground mb-1">
-                          {contribution.project}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(contribution.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="text-right mr-4">
-                        <div className="font-semibold text-primary">
-                          ₹{contribution.amount}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {contribution.amount / 2} credits
-                        </div>
-                      </div>
-                      <Badge
-                        variant={contribution.status === "verified" ? "default" : "secondary"}
-                        className={
-                          contribution.status === "verified"
-                            ? "bg-success text-success-foreground"
-                            : ""
-                        }
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground">Recent Contributions</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Every contribution issues a verifiable certificate of impact
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="hidden md:flex">
+                    {recentContributions.length} total
+                  </Badge>
+                </div>
+
+                <div className="grid gap-4">
+                  {recentContributions.map((contribution) => {
+                    const isVerified = contribution.status === "verified";
+                    const credits = Math.round(contribution.amount / 2);
+                    const co2 = (contribution.amount / 10).toFixed(1);
+
+                    return (
+                      <Card
+                        key={contribution.id}
+                        className="group relative overflow-hidden border hover:border-primary/40 hover:shadow-lg transition-all duration-300"
                       >
-                        {contribution.status === "verified" ? (
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                        ) : null}
-                        {contribution.status}
-                      </Badge>
-                    </div>
-                  ))}
+                        {/* Accent strip */}
+                        <div
+                          className={`absolute left-0 top-0 bottom-0 w-1 ${
+                            isVerified ? "bg-success" : "bg-muted-foreground/30"
+                          }`}
+                        />
+
+                        <div className="p-5 pl-6 flex flex-col md:flex-row md:items-center gap-5">
+                          {/* Icon */}
+                          <div
+                            className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${
+                              isVerified
+                                ? "bg-success/10 text-success"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            {isVerified ? (
+                              <Award className="h-6 w-6" />
+                            ) : (
+                              <Clock className="h-6 w-6" />
+                            )}
+                          </div>
+
+                          {/* Details */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                              <h4 className="font-semibold text-foreground leading-tight">
+                                {contribution.project}
+                              </h4>
+                              <Badge
+                                variant={isVerified ? "default" : "secondary"}
+                                className={
+                                  isVerified
+                                    ? "bg-success/10 text-success hover:bg-success/20 border-success/20"
+                                    : ""
+                                }
+                              >
+                                {isVerified ? (
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                ) : (
+                                  <Clock className="h-3 w-3 mr-1" />
+                                )}
+                                {contribution.status}
+                              </Badge>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
+                              <span>
+                                {new Date(contribution.date).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <span className="font-semibold text-primary">₹{contribution.amount}</span>
+                                contributed
+                              </span>
+                              <span>
+                                <span className="font-semibold text-foreground">{credits}</span> credits
+                              </span>
+                              <span>
+                                <span className="font-semibold text-success">{co2} kg</span> CO₂
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action */}
+                          <div className="shrink-0">
+                            {isVerified ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedCert(contribution)}
+                                className="border-success/30 text-success hover:bg-success hover:text-success-foreground transition-colors"
+                              >
+                                <Award className="h-4 w-4 mr-2" />
+                                Show Certificate
+                              </Button>
+                            ) : (
+                              <Button size="sm" variant="ghost" disabled>
+                                <Clock className="h-4 w-4 mr-2" />
+                                Awaiting verification
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
               </Card>
             </TabsContent>
@@ -317,6 +395,12 @@ const UserDashboard = () => {
         </div>
       </main>
       <Footer />
+      <CertificateModal
+        open={!!selectedCert}
+        onClose={() => setSelectedCert(null)}
+        contribution={selectedCert}
+        userName={userData.name}
+      />
     </div>
   );
 };

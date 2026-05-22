@@ -18,6 +18,15 @@ import {
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 100]);
@@ -26,14 +35,20 @@ const Marketplace = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [verifiedOnly, setVerifiedOnly] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
+  const [sortByImpact, setSortByImpact] = useState(false);
+  const [contributeProject, setContributeProject] = useState<any>(null);
+  const [purchasing, setPurchasing] = useState(false);
   const { role, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
+
+  const parseImpact = (s: string) => parseFloat(s.replace(/[^\d.]/g, "")) || 0;
 
   const applyFilters = () => {
     const baseProjects = contributionProjects;
@@ -56,14 +71,33 @@ const Marketplace = () => {
       
       return matchesSearch && matchesType && matchesPrice && matchesVerified;
     });
-    
+
+    if (sortByImpact) {
+      filtered = [...filtered].sort((a, b) => parseImpact(b.impact) - parseImpact(a.impact));
+    }
+
     setFilteredProjects(filtered);
   };
 
-  // Initialize filtered projects
+  const handleConfirmContribute = () => {
+    if (!contributeProject) return;
+    setPurchasing(true);
+    setTimeout(() => {
+      setPurchasing(false);
+      const proj = contributeProject;
+      setContributeProject(null);
+      toast({
+        title: "Contribution successful 🎉",
+        description: `You contributed ₹${proj.price} to "${proj.title}". Certificate available in your dashboard.`,
+      });
+    }, 900);
+  };
+
+  // Re-apply when sort toggles or role changes
   useEffect(() => {
     applyFilters();
-  }, [role]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, sortByImpact]);
 
   const contributionProjects = [
     {
@@ -370,9 +404,12 @@ const Marketplace = () => {
                     {filteredProjects.length > 0 ? filteredProjects.length : contributionProjects.length} projects found
                   </p>
                 </div>
-                <Button variant="outline">
+                <Button
+                  variant={sortByImpact ? "default" : "outline"}
+                  onClick={() => setSortByImpact((v) => !v)}
+                >
                   <TrendingUp className="h-4 w-4 mr-2" />
-                  Sort by Impact
+                  {sortByImpact ? "Sorted by Impact" : "Sort by Impact"}
                 </Button>
               </div>
 
@@ -435,7 +472,7 @@ const Marketplace = () => {
                         </div>
                       </div>
 
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={() => setContributeProject(project)}>
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         Contribute ₹{project.price}
                       </Button>
@@ -448,6 +485,58 @@ const Marketplace = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Contribute confirmation dialog */}
+      <Dialog open={!!contributeProject} onOpenChange={(o) => !o && setContributeProject(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm your contribution</DialogTitle>
+            <DialogDescription>
+              You're contributing to a verified climate project. A certificate will be issued to your dashboard.
+            </DialogDescription>
+          </DialogHeader>
+
+          {contributeProject && (
+            <div className="space-y-4">
+              <div className="flex gap-4 items-center p-4 rounded-lg bg-secondary/40">
+                <img
+                  src={contributeProject.image}
+                  alt={contributeProject.title}
+                  className="w-16 h-16 rounded-md object-cover"
+                />
+                <div className="min-w-0">
+                  <p className="font-semibold text-foreground truncate">{contributeProject.title}</p>
+                  <p className="text-xs text-muted-foreground">{contributeProject.provider}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Amount</div>
+                  <div className="font-bold text-primary">₹{contributeProject.price}</div>
+                </div>
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Credits</div>
+                  <div className="font-bold">{contributeProject.credits}</div>
+                </div>
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Impact</div>
+                  <div className="font-bold text-success text-sm">{contributeProject.impact}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setContributeProject(null)} disabled={purchasing}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmContribute} disabled={purchasing}>
+              {purchasing ? "Processing…" : `Confirm ₹${contributeProject?.price ?? ""}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
