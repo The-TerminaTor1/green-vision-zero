@@ -485,8 +485,62 @@ const Marketplace = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Contribute confirmation dialog */}
+      <Dialog open={!!contributeProject} onOpenChange={(o) => !o && setContributeProject(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm your contribution</DialogTitle>
+            <DialogDescription>
+              You're contributing to a verified climate project. A certificate will be issued to your dashboard.
+            </DialogDescription>
+          </DialogHeader>
+
+          {contributeProject && (
+            <div className="space-y-4">
+              <div className="flex gap-4 items-center p-4 rounded-lg bg-secondary/40">
+                <img
+                  src={contributeProject.image}
+                  alt={contributeProject.title}
+                  className="w-16 h-16 rounded-md object-cover"
+                />
+                <div className="min-w-0">
+                  <p className="font-semibold text-foreground truncate">{contributeProject.title}</p>
+                  <p className="text-xs text-muted-foreground">{contributeProject.provider}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Amount</div>
+                  <div className="font-bold text-primary">₹{contributeProject.price}</div>
+                </div>
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Credits</div>
+                  <div className="font-bold">{contributeProject.credits}</div>
+                </div>
+                <div className="p-3 rounded-lg border">
+                  <div className="text-xs text-muted-foreground">Impact</div>
+                  <div className="font-bold text-success text-sm">{contributeProject.impact}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setContributeProject(null)} disabled={purchasing}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmContribute} disabled={purchasing}>
+              {purchasing ? "Processing…" : `Confirm ₹${contributeProject?.price ?? ""}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+export default Marketplace;
 
 export default Marketplace;
