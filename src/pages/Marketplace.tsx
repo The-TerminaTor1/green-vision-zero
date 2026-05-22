@@ -404,9 +404,12 @@ const Marketplace = () => {
                     {filteredProjects.length > 0 ? filteredProjects.length : contributionProjects.length} projects found
                   </p>
                 </div>
-                <Button variant="outline">
+                <Button
+                  variant={sortByImpact ? "default" : "outline"}
+                  onClick={() => setSortByImpact((v) => !v)}
+                >
                   <TrendingUp className="h-4 w-4 mr-2" />
-                  Sort by Impact
+                  {sortByImpact ? "Sorted by Impact" : "Sort by Impact"}
                 </Button>
               </div>
 
