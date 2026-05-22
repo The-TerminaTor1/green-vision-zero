@@ -35,14 +35,20 @@ const Marketplace = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [verifiedOnly, setVerifiedOnly] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
+  const [sortByImpact, setSortByImpact] = useState(false);
+  const [contributeProject, setContributeProject] = useState<any>(null);
+  const [purchasing, setPurchasing] = useState(false);
   const { role, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
+
+  const parseImpact = (s: string) => parseFloat(s.replace(/[^\d.]/g, "")) || 0;
 
   const applyFilters = () => {
     const baseProjects = contributionProjects;
