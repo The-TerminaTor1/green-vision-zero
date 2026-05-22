@@ -93,10 +93,11 @@ const Marketplace = () => {
     }, 900);
   };
 
-  // Initialize filtered projects
+  // Re-apply when sort toggles or role changes
   useEffect(() => {
     applyFilters();
-  }, [role]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, sortByImpact]);
 
   const contributionProjects = [
     {
