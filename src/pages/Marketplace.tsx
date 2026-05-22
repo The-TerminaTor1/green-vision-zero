@@ -71,8 +71,26 @@ const Marketplace = () => {
       
       return matchesSearch && matchesType && matchesPrice && matchesVerified;
     });
-    
+
+    if (sortByImpact) {
+      filtered = [...filtered].sort((a, b) => parseImpact(b.impact) - parseImpact(a.impact));
+    }
+
     setFilteredProjects(filtered);
+  };
+
+  const handleConfirmContribute = () => {
+    if (!contributeProject) return;
+    setPurchasing(true);
+    setTimeout(() => {
+      setPurchasing(false);
+      const proj = contributeProject;
+      setContributeProject(null);
+      toast({
+        title: "Contribution successful 🎉",
+        description: `You contributed ₹${proj.price} to "${proj.title}". Certificate available in your dashboard.`,
+      });
+    }, 900);
   };
 
   // Initialize filtered projects
