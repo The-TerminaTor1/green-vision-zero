@@ -395,6 +395,12 @@ const UserDashboard = () => {
         </div>
       </main>
       <Footer />
+      <CertificateModal
+        open={!!selectedCert}
+        onClose={() => setSelectedCert(null)}
+        contribution={selectedCert}
+        userName={userData.name}
+      />
     </div>
   );
 };
