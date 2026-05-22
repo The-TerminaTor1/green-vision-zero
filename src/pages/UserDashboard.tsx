@@ -3,19 +3,23 @@ import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Award, 
-  TrendingUp, 
-  TreeDeciduous, 
+import {
+  Award,
+  TrendingUp,
+  TreeDeciduous,
   Gift,
   CheckCircle,
   Trophy,
-  Target
+  Target,
+  Clock,
 } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import ProgressiveContributionTracker from "@/components/dashboard/ProgressiveContributionTracker";
+import CertificateModal from "@/components/dashboard/CertificateModal";
+import { useState } from "react";
 
 const UserDashboard = () => {
   const userData = {
