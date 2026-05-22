@@ -22,6 +22,7 @@ import CertificateModal from "@/components/dashboard/CertificateModal";
 import { useState } from "react";
 
 const UserDashboard = () => {
+  const [selectedCert, setSelectedCert] = useState<any>(null);
   const userData = {
     name: "Alex Thompson",
     email: "alex.thompson@email.com",
