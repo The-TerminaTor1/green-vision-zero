@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +39,7 @@ const Marketplace = () => {
   const [sortByImpact, setSortByImpact] = useState(false);
   const [contributeProject, setContributeProject] = useState<any>(null);
   const [purchasing, setPurchasing] = useState(false);
-  const { role, isAuthenticated } = useAuth();
+  const { role, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -79,18 +80,27 @@ const Marketplace = () => {
     setFilteredProjects(filtered);
   };
 
-  const handleConfirmContribute = () => {
-    if (!contributeProject) return;
+  const handleConfirmContribute = async () => {
+    if (!contributeProject || !user) return;
     setPurchasing(true);
-    setTimeout(() => {
-      setPurchasing(false);
-      const proj = contributeProject;
-      setContributeProject(null);
-      toast({
+    const proj = contributeProject;
+    try {
+      await supabase.from("notifications").insert({
+        user_id: user.id,
         title: "Contribution successful 🎉",
-        description: `You contributed ₹${proj.price} to "${proj.title}". Certificate available in your dashboard.`,
+        message: `You contributed ₹${proj.price} to "${proj.title}". Your certificate is ready in the dashboard.`,
+        type: "success",
+        link: "/dashboard",
       });
-    }, 900);
+    } catch (e) {
+      // non-blocking
+    }
+    setPurchasing(false);
+    setContributeProject(null);
+    toast({
+      title: "Contribution successful 🎉",
+      description: `You contributed ₹${proj.price} to "${proj.title}". Certificate available in your dashboard.`,
+    });
   };
 
   // Re-apply when sort toggles or role changes

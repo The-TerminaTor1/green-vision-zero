@@ -13,6 +13,7 @@ import AdminPanel from "./pages/AdminPanel";
 import Marketplace from "./pages/Marketplace";
 import RewardsShop from "./pages/RewardsShop";
 import NotFound from "./pages/NotFound";
+import ProfileSettings from "./pages/ProfileSettings";
 import ChatbotWidget from "./components/home/ChatbotWidget";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/rewards" element={<RewardsShop />} />
+            <Route path="/profile" element={<ProfileSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ChatbotWidget />

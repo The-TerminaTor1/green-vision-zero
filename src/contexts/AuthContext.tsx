@@ -1,91 +1,130 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Session, User as SbUser } from "@supabase/supabase-js";
 
-export type UserRole = "individual" | "firm" | "corporate" | null;
+export type UserRole = "individual" | "firm" | "corporate" | "admin" | null;
 
-interface User {
-  email: string;
-  name: string;
-  role: UserRole;
+export interface Profile {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  phone: string | null;
+  organization: string | null;
 }
 
 interface AuthContextType {
   role: UserRole;
-  user: User | null;
+  user: SbUser | null;
+  profile: Profile | null;
+  session: Session | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  register: (email: string, password: string, name: string, role: UserRole) => boolean;
-  logout: () => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<{ error: string | null }>;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+    role: Exclude<UserRole, null | "admin">,
+  ) => Promise<{ error: string | null }>;
+  logout: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SbUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<UserRole>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const loadUserData = async (uid: string) => {
+    const [{ data: prof }, { data: roles }] = await Promise.all([
+      supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", uid),
+    ]);
+    setProfile(prof as Profile | null);
+    const r = roles?.[0]?.role as UserRole;
+    setRole(r ?? "individual");
+  };
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      setRole(parsedUser.role);
-      setIsAuthenticated(true);
-    }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
+      setSession(sess);
+      setUser(sess?.user ?? null);
+      if (sess?.user) {
+        setTimeout(() => loadUserData(sess.user.id), 0);
+      } else {
+        setProfile(null);
+        setRole(null);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) loadUserData(session.user.id);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (email: string, password: string): boolean => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find((u: any) => u.email === email && u.password === password);
-    
-    if (foundUser) {
-      const userData = { email: foundUser.email, name: foundUser.name, role: foundUser.role };
-      setUser(userData);
-      setRole(foundUser.role);
-      setIsAuthenticated(true);
-      localStorage.setItem("user", JSON.stringify(userData));
-      return true;
-    }
-    return false;
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error?.message ?? null };
   };
 
-  const register = (email: string, password: string, name: string, selectedRole: UserRole): boolean => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    if (users.find((u: any) => u.email === email)) {
-      return false;
-    }
-
-    const newUser = { email, password, name, role: selectedRole };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    const userData = { email, name, role: selectedRole };
-    setUser(userData);
-    setRole(selectedRole);
-    setIsAuthenticated(true);
-    localStorage.setItem("user", JSON.stringify(userData));
-    return true;
+  const register = async (
+    email: string,
+    password: string,
+    name: string,
+    selectedRole: Exclude<UserRole, null | "admin">,
+  ) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: { full_name: name, role: selectedRole },
+      },
+    });
+    return { error: error?.message ?? null };
   };
 
-  const logout = () => {
-    setUser(null);
-    setRole(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem("user");
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const refreshProfile = async () => {
+    if (user) await loadUserData(user.id);
   };
 
   return (
-    <AuthContext.Provider value={{ role, user, isAuthenticated, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        role,
+        user,
+        profile,
+        session,
+        isAuthenticated: !!user,
+        loading,
+        login,
+        register,
+        logout,
+        refreshProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
 };

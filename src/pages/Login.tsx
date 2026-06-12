@@ -4,90 +4,62 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Building2, ShoppingBag, Leaf } from "lucide-react";
+import { User, Building2, ShoppingBag, Leaf, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, register, isAuthenticated } = useAuth();
+  const { login, register, isAuthenticated, role } = useAuth();
   const { toast } = useToast();
   const [selectedRole, setSelectedRole] = useState<"individual" | "firm" | "corporate">("individual");
+  const [submitting, setSubmitting] = useState(false);
 
-  // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-
-  // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/marketplace");
+    if (isAuthenticated && role) {
+      const dest =
+        role === "firm" ? "/firm-dashboard" :
+        role === "corporate" ? "/corporate-dashboard" :
+        role === "admin" ? "/admin-panel" : "/dashboard";
+      navigate(dest);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, role, navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = login(loginEmail, loginPassword);
-    if (success) {
-      toast({
-        title: "Welcome back!",
-        description: "You've successfully logged in.",
-      });
-      navigate("/marketplace");
+    setSubmitting(true);
+    const { error } = await login(loginEmail, loginPassword);
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Login failed", description: error, variant: "destructive" });
     } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid email or password.",
-        variant: "destructive",
-      });
+      toast({ title: "Welcome back!", description: "You've successfully logged in." });
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = register(registerEmail, registerPassword, registerName, selectedRole);
-    if (success) {
-      toast({
-        title: "Account created!",
-        description: "You've successfully registered.",
-      });
-      navigate("/marketplace");
+    setSubmitting(true);
+    const { error } = await register(registerEmail, registerPassword, registerName, selectedRole);
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Registration failed", description: error, variant: "destructive" });
     } else {
-      toast({
-        title: "Registration failed",
-        description: "Email already exists.",
-        variant: "destructive",
-      });
+      toast({ title: "Account created!", description: "Welcome to Nirmal Carbon 🌱" });
     }
   };
 
   const roles = [
-    {
-      id: "individual",
-      title: "Individual User",
-      description: "Track contributions, earn rewards, and offset your carbon footprint",
-      icon: User,
-      color: "from-green-500 to-emerald-600",
-    },
-    {
-      id: "firm",
-      title: "Plantation Firm",
-      description: "Manage projects, issue credits, and showcase your plantations",
-      icon: Building2,
-      color: "from-blue-500 to-cyan-600",
-    },
-    {
-      id: "corporate",
-      title: "Corporate Buyer",
-      description: "Purchase carbon credits and achieve your net-zero goals",
-      icon: ShoppingBag,
-      color: "from-purple-500 to-pink-600",
-    },
+    { id: "individual", title: "Individual User", description: "Track contributions, earn rewards, and offset your carbon footprint", icon: User, color: "from-green-500 to-emerald-600" },
+    { id: "firm", title: "Plantation Firm", description: "Manage projects, issue credits, and showcase your plantations", icon: Building2, color: "from-blue-500 to-cyan-600" },
+    { id: "corporate", title: "Corporate Buyer", description: "Purchase carbon credits and achieve your net-zero goals", icon: ShoppingBag, color: "from-purple-500 to-pink-600" },
   ];
 
   return (
@@ -111,27 +83,15 @@ const Login = () => {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="login-email">Email</Label>
-                <Input
-                  id="login-email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  required
-                />
+                <Input id="login-email" type="email" placeholder="your@email.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="login-password">Password</Label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  required
-                />
+                <Input id="login-password" type="password" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
               </div>
-              <Button type="submit" className="w-full">Login</Button>
+              <Button type="submit" className="w-full" disabled={submitting}>
+                {submitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}Login
+              </Button>
             </form>
           </TabsContent>
 
@@ -139,60 +99,34 @@ const Login = () => {
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="register-name">Full Name</Label>
-                <Input
-                  id="register-name"
-                  type="text"
-                  placeholder="John Doe"
-                  value={registerName}
-                  onChange={(e) => setRegisterName(e.target.value)}
-                  required
-                />
+                <Input id="register-name" type="text" placeholder="John Doe" value={registerName} onChange={(e) => setRegisterName(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-email">Email</Label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={registerEmail}
-                  onChange={(e) => setRegisterEmail(e.target.value)}
-                  required
-                />
+                <Input id="register-email" type="email" placeholder="your@email.com" value={registerEmail} onChange={(e) => setRegisterEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password">Password</Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={registerPassword}
-                  onChange={(e) => setRegisterPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
+                <Input id="register-password" type="password" placeholder="••••••••" value={registerPassword} onChange={(e) => setRegisterPassword(e.target.value)} required minLength={6} />
               </div>
 
               <div className="space-y-3">
                 <Label>Select Your Role</Label>
                 <div className="grid grid-cols-1 gap-3">
-                  {roles.map((role) => {
-                    const Icon = role.icon;
+                  {roles.map((r) => {
+                    const Icon = r.icon;
                     return (
                       <div
-                        key={role.id}
-                        onClick={() => setSelectedRole(role.id as "individual" | "firm" | "corporate")}
-                        className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                          selectedRole === role.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50"
-                        }`}
+                        key={r.id}
+                        onClick={() => setSelectedRole(r.id as any)}
+                        className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedRole === r.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
                       >
-                        <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${role.color} flex items-center justify-center flex-shrink-0`}>
+                        <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${r.color} flex items-center justify-center flex-shrink-0`}>
                           <Icon className="h-5 w-5 text-white" />
                         </div>
                         <div className="text-left">
-                          <p className="font-semibold text-sm">{role.title}</p>
-                          <p className="text-xs text-muted-foreground">{role.description}</p>
+                          <p className="font-semibold text-sm">{r.title}</p>
+                          <p className="text-xs text-muted-foreground">{r.description}</p>
                         </div>
                       </div>
                     );
@@ -200,15 +134,13 @@ const Login = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">Create Account</Button>
+              <Button type="submit" className="w-full" disabled={submitting}>
+                {submitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}Create Account
+              </Button>
             </form>
           </TabsContent>
         </Tabs>
       </Card>
-
-      <p className="text-sm text-muted-foreground mt-6 text-center max-w-md">
-        Demo mode: Create an account or login to explore the platform
-      </p>
     </div>
   );
 };

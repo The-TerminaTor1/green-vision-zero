@@ -19,14 +19,24 @@ import {
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import ProgressiveContributionTracker from "@/components/dashboard/ProgressiveContributionTracker";
 import CertificateModal from "@/components/dashboard/CertificateModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [selectedCert, setSelectedCert] = useState<any>(null);
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login");
+  }, [user, loading, navigate]);
+
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "Contributor";
   const userData = {
-    name: "Alex Thompson",
-    email: "alex.thompson@email.com",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    name: displayName,
+    email: user?.email ?? "",
+    avatar: profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(displayName)}`,
     credits: 1250,
     totalContributions: 2500,
     co2Offset: 125,

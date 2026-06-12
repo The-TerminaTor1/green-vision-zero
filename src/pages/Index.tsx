@@ -8,6 +8,7 @@ import Testimonials from "@/components/home/Testimonials";
 import SocialProofWidget from "@/components/home/SocialProofWidget";
 import TopCompanies from "@/components/home/TopCompanies";
 import TopContributors from "@/components/home/TopContributors";
+import PersonalizedWelcome from "@/components/home/PersonalizedWelcome";
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <PersonalizedWelcome />
         <SocialProofWidget />
         <TopCompanies />
         <HowItWorks />
